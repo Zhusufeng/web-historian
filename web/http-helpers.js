@@ -16,6 +16,12 @@ exports.serveAssets = function(res, asset, callback) {
   // css, or anything that doesn't change often.)
 };
 
+var redirect = function (response, location, status) {
+  var status = status || 302;  // Give it a redirect HTTP status code
+  console.log('redirect ran')
+  response.writeHead(status, {Location: location}); // redirects to file with location
+  response.end('You have been successfully redirected to ', location);
+}
 
 var tempData = [];
 
@@ -66,13 +72,21 @@ exports.actions = {
           if (found) {
             // Y check if its in the archives/sites folder
             archive.isUrlArchived(body, function() {
-
+              if (true) {
+                // Y redirect client to file //done
+                console.log('redirect client to file');
+              } else {
+                // N redirect to loading.html
+                console.log('redirect to loading.html')
+              }
             });
-              // Y redirect client to file //done
-            // N redirect to loading.html
           } else { // ELSE
             // add url to site.txt
-            // redirect to loading page
+            archive.addUrlToList(body, function() {
+              console.log('you are in addURLtoList');
+              // redirect to loading page
+              redirect(response, '/loading.html');
+            });
           }
 
         });
